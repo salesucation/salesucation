@@ -1,0 +1,13 @@
+version: "2.4"
+
+services:
+  notty:
+    build: .
+    volumes:
+      - ./db.sqlite:/usr/local/notty/db.sqlite
+      - ./.env:/usr/local/notty/.env
+    command: pnpm run dev
+    environment:
+      SKIP_ENV_VALIDATION: 1
+    ports:
+      - 3000:3000
