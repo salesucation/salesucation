@@ -9,3 +9,4 @@
 6. as a user of serverless I need the installation to detect the kubernetes environment from "bare metal", GKS, AKS or EKS and install knative so that I don't experience lockin and can continue using my current cloud provider
 7. as a user of serverless I need a git http server so that I can have continuous build and deployment everytime I push my changes
 8. as a user of serverless I need s3 compatible storage so that my initial page load is fast enough to get a good lighthouse score and not turn people away from my web presence
+9. as a devops engineer I need a kanban board (poss planka) so that I can add and subtract from the backlog and not worry about coliding with changes
