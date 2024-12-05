@@ -1,6 +1,6 @@
 # knative-pages
 
-## serverless ecosystem for when servers are too expensive or unavailable because of a business interuption
+## serverless ecosystem to enable autonomous teams to make [microfrontends](https://martinfowler.com/articles/micro-frontends.html)
 
 TLDR;
 
