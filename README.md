@@ -19,6 +19,3 @@ There is also a [discussion](https://github.com/salesucation/salesucation/discus
 
 My idea is that it will test `stage1` (bash) using docker to emulate yum, apt and dnf environments. `stage2.py` will be tested in the more normal way, as well as with docker to test with GKS, AKS and EKS.
 
-## Testing backend
-
-There is a `testing-backend/docker-compose.yml` and subfolders for [notty](https://github.com/JCarlosLucio/notty), [signoz](https://github.com/SigNoz/signoz/) and [atomic-crm](https://github.com/marmelab/atomic-crm). 
