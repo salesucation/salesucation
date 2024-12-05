@@ -5,8 +5,7 @@
 TLDR;
 
 ```bash
-python -m coverage run -m unittest tests.py
-python -m coverage report -m
+curl -s -L https://raw.githubusercontent.com/salesucation/knative-pages/main/stage1.sh |bash
 ```
 
 This is an open source way to deploy a serverless app, microservice or microfrontend. It uses knative and a git repository to build and deploy your source code, like heroku or openshift 1 used to. Knative-pages provides a supabase backend and works on linux, AKS, GKE and EKS. This repository is also a central place to share [issues or friction](https://github.com/salesucation/salesucation/issues) that you are having with the hosted deployment environment at [https://salesucation.ca](https://salesucation.ca). Please go to [https://salesucation.ca](https://salesucation.ca) for cheap and cheerful deployment for autonomous teams to do proof of concepts, prototypes or demos without worrying about servers.
@@ -19,3 +18,7 @@ There is also a [discussion](https://github.com/salesucation/salesucation/discus
 
 My idea is that it will test `stage1` (bash) using docker to emulate yum, apt, apk and dnf environments. `stage2.py` will be tested in the more normal way, as well as with docker to test with GKS, AKS and EKS.
 
+```bash
+python -m coverage run -m unittest tests.py
+python -m coverage report -m
+```
