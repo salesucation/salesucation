@@ -17,5 +17,5 @@ There is also a [discussion](https://github.com/salesucation/salesucation/discus
 
 ### will contain unittest tests
 
-My idea is that it will test `stage1` (bash) using docker to emulate yum, apt and dnf environments. `stage2.py` will be tested in the more normal way, as well as with docker to test with GKS, AKS and EKS.
+My idea is that it will test `stage1` (bash) using docker to emulate yum, apt, apk and dnf environments. `stage2.py` will be tested in the more normal way, as well as with docker to test with GKS, AKS and EKS.
 
