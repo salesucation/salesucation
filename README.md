@@ -1,6 +1,6 @@
 # knative-pages
 
-## serverless ecosystem to enable autonomous teams to make [microfrontends](https://martinfowler.com/articles/micro-frontends.html)
+## serverless ecosystem to enable autonomous teams to deploy [microfrontends](https://martinfowler.com/articles/micro-frontends.html)
 
 TLDR;
 
