@@ -1,4 +1,4 @@
-# knative-pages
+# k3p
 
 ## serverless ecosystem to enable autonomous teams to deploy [microfrontends](https://martinfowler.com/articles/micro-frontends.html)
 
