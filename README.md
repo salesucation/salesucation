@@ -5,10 +5,10 @@
 TLDR;
 
 ```bash
-curl -s -L https://raw.githubusercontent.com/salesucation/knative-pages/main/stage1.sh |bash
+curl -s -L https://raw.githubusercontent.com/salesucation/k3p/main/stage1.sh |bash
 ```
 
-This is an open source way to deploy a serverless app, microservice or microfrontend. It uses knative and a git repository to build and deploy source code from autonomous teams, like heroku or openshift 1 used to. Knative-pages provides a supabase backend and works on linux, AKS, GKE and EKS. This repository is also a central place to share [issues or friction](https://github.com/salesucation/salesucation/issues) that you are having with the hosted deployment environment at [https://salesucation.ca](https://salesucation.ca). Please go to [https://salesucation.ca](https://salesucation.ca) for cheap and cheerful deployment for autonomous teams to do proof of concepts, prototypes or demos without worrying about servers.
+This is an open source way to deploy a serverless app, microservice or microfrontend. It uses knative and a git repository to build and deploy source code from autonomous teams, like heroku or openshift 1 used to. k3p provides a supabase backend and works on linux, AKS, GKE and EKS. This repository is also a central place to share [issues or friction](https://github.com/salesucation/salesucation/issues) that you are having with the hosted deployment environment at [https://salesucation.ca](https://salesucation.ca). Please go to [https://salesucation.ca](https://salesucation.ca) for cheap and cheerful deployment for autonomous teams to do proof of concepts, prototypes or demos without worrying about servers.
 
 There is also a [discussion](https://github.com/salesucation/salesucation/discussions) feature here for sharing anything of interest to people trying to deploy with completely autonomous [2 large pizza](https://docs.aws.amazon.com/whitepapers/latest/public-sector-cloud-transformation/two-pizza-teams-from-ops-to-devops.html) teams.
 
