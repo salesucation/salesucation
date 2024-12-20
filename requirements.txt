@@ -1,3 +1,5 @@
+ansible
+ansible_runner
 pyyaml==5.3.1
 docker-compose
 docker==6.1.3
