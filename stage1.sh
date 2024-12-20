@@ -14,7 +14,6 @@ if [ $(id -u) -eq 0 ]; then
         echo 'Also please set `PermitRootLogin no`'
         echo '`PasswordAuthentication no` and `ChallengeResponseAuthentication no`'
     fi
-    su $USERNAME
 fi
 
 
