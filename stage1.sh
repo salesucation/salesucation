@@ -9,6 +9,7 @@ if [ $(id -u) -eq 0 ]; then
         sed -i /etc/sudoers -re 's/^%sudo.*/%sudo   ALL=(ALL:ALL) NOPASSWD: ALL/g'
         mkdir /home/$USERNAME
         chown $USERNAME:$USERNAME /home/$USERNAME
+        usermod -a -G docker $USERNAME
 
         echo 'You will still need to set up some authorized_keys'
         echo 'Also please set `PermitRootLogin no`'
