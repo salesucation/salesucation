@@ -5,7 +5,7 @@ if [ $(id -u) -eq 0 ]; then
     echo -n "This installation is not meant to run as root ... enter non root username with passwordless sudo: "
     read USERNAME
     if [ ! -d /home/$USERNAME ]; then
-        useradd $USERNAME -u 1000 && echo "$USERNAME:$USERNAME" | chpasswd && adduser $USERNAME sudo
+        useradd $USERNAME -u 1000 --shell "/bin/bash" && echo "$USERNAME:$USERNAME" | chpasswd && adduser $USERNAME sudo
         sed -i /etc/sudoers -re 's/^%sudo.*/%sudo   ALL=(ALL:ALL) NOPASSWD: ALL/g'
         mkdir /home/$USERNAME
         chown $USERNAME:$USERNAME /home/$USERNAME
@@ -14,7 +14,7 @@ if [ $(id -u) -eq 0 ]; then
         echo 'Also please set `PermitRootLogin no`'
         echo '`PasswordAuthentication no` and `ChallengeResponseAuthentication no`'
     fi
-    su - $USERNAME
+    su $USERNAME
 fi
 
 
@@ -30,10 +30,10 @@ fi
 
 ## install docker if not there
 if ! [ -x "$(command -v docker)" ]; then
-    sudo apt install docker
+    sudo apt update && sudo apt install docker.io
 fi
 
 ## install python if not there
 if ! [ -x "$(command -v python)" ]; then
-    sudo apt install python && pip install ansible
+    sudo apt update && sudo apt install python && pip install ansible
 fi
