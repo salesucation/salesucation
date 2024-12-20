@@ -35,5 +35,5 @@ fi
 
 ## install python if not there
 if ! [ -x "$(command -v python)" ]; then
-    sudo apt update && sudo apt install python-is-python3 pip && pip install ansible
+    sudo apt update && sudo apt install python-is-python3 pip ansible
 fi
