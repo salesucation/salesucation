@@ -27,13 +27,18 @@ if ! free | awk '/^Swap:/ {exit !$2}'; then
     sudo sh -c "echo '/swapfile swap swap defaults 0 0'>>/etc/fstab"
 fi
 
+# install some missing packages
+
+sudo apt update
+
 
 ## install docker if not there
 if ! [ -x "$(command -v docker)" ]; then
-    sudo apt update && sudo apt install docker.io
+    sudo apt install docker.io
 fi
 
 ## install python if not there
 if ! [ -x "$(command -v python)" ]; then
-    sudo apt update && sudo apt install python-is-python3 pip ansible
+    sudo apt install python-is-python3 pip && sudo mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old
+
 fi
