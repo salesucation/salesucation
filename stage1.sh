@@ -39,6 +39,17 @@ fi
 
 ## install python if not there
 if ! [ -x "$(command -v python)" ]; then
-    sudo apt install python-is-python3 pip && sudo mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old
-
+    sudo apt install python-is-python3 pip
 fi
+
+python -m venv /tmp/install
+
+cd /tmp/install
+
+source ./bin/activate
+
+curl -o requirements.txt https://raw.githubusercontent.com/salesucation/k3p/rich-sprint1/requirements.txt
+
+pip install -r requirements.txt
+
+curl -o stage2.py https://raw.githubusercontent.com/salesucation/k3p/rich-sprint1/stage2.py
