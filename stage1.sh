@@ -12,20 +12,11 @@ if [ $(id -u) -eq 0 ]; then
         usermod -a -G docker $USERNAME
 
         echo 'You will still need to set up some authorized_keys'
-        echo 'Also please set `PermitRootLogin no`'
+        echo 'Also please sefile.zipt `PermitRootLogin no`'
         echo '`PasswordAuthentication no` and `ChallengeResponseAuthentication no`'
     fi
 fi
 
-
-# setup some swap
-if ! free | awk '/^Swap:/ {exit !$2}'; then
-    sudo dd if=/dev/zero of=/swapfile bs=1M count=8192
-    sudo chmod 600 /swapfile
-    sudo mkswap /swapfile
-    sudo swapon /swapfile
-    sudo sh -c "echo '/swapfile swap swap defaults 0 0'>>/etc/fstab"
-fi
 
 # install some missing packages
 
@@ -48,8 +39,10 @@ cd /tmp/install
 
 source ./bin/activate
 
-curl -o requirements.txt https://raw.githubusercontent.com/salesucation/k3p/rich-sprint1/requirements.txt
+curl -o requirements.txt https://raw.githubusercontent.com/salesucation/k3p/main/requirements.txt
 
 pip install -r requirements.txt
 
-curl -o stage2.py https://raw.githubusercontent.com/salesucation/k3p/rich-sprint1/stage2.py
+curl -o stage2.py https://raw.githubusercontent.com/salesucation/k3p/main/stage2.py
+
+python stage2.py
