@@ -1,7 +1,7 @@
 import ansible_runner
 import requests
  
-url = 'https://raw.githubusercontent.com/salesucation/k3p/main/stage2a.yml'  # Replace with your URL
+url = 'https://raw.githubusercontent.com/salesucation/k3p/rich-sprint2/stage2a.yml'  # Replace with your URL
 local_filename = '/tmp/install/stage2a.yml'  # Replace with your desired local file name
  
 def download_file(url, local_filename):
