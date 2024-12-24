@@ -20,7 +20,7 @@ fi
 ## install python if not there
 if ! [ -x "$(command -v python)" ]; then
     sudo apt update
-    sudo apt install python-is-python3 pip
+    sudo apt install python-is-python3 python3-venv pip
 fi
 
 python -m venv /tmp/install
