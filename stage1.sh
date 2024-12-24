@@ -17,19 +17,9 @@ if [ $(id -u) -eq 0 ]; then
     fi
 fi
 
-
-# install some missing packages
-
-sudo apt update
-
-
-## install docker if not there
-if ! [ -x "$(command -v docker)" ]; then
-    sudo apt install docker.io
-fi
-
 ## install python if not there
 if ! [ -x "$(command -v python)" ]; then
+    sudo apt update
     sudo apt install python-is-python3 pip
 fi
 
