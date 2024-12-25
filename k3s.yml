@@ -2,6 +2,6 @@
   hosts: localhost
   tasks:
   - name: install k3s
-    shell: "curl -sfL https://get.k3s.io | sh -"
+    shell: "curl -sfL https://get.k3s.io | sh -s - --disable traefik --write-kubeconfig-mode 644"
     args:
       creates: /etc/rancher/k3s/k3s.yaml
