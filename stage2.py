@@ -1,6 +1,7 @@
 import ansible_runner
 import requests
 import shutil
+import os
   
 def download_file(url, local_filename):
     with requests.get(url, stream=True) as r:
@@ -19,6 +20,7 @@ else:
     download_file('https://raw.githubusercontent.com/salesucation/k3p/rich-sprint2/k3s.yml', '/tmp/install/k3s.yml')
     r = ansible_runner.run(private_data_dir='.', playbook='k3s.yml')
     print("{}: {}".format(r.status, r.rc))
+    os.environ["KUBECONFIG"] = "/etc/rancher/k3s/k3s.yaml"
 
 # install knative
 download_file('https://raw.githubusercontent.com/salesucation/k3p/rich-sprint2/knative.yml', '/tmp/install/knative.yml')
