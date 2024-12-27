@@ -29,10 +29,10 @@ cd /tmp/install
 
 source ./bin/activate
 
-curl -o requirements.txt https://raw.githubusercontent.com/salesucation/k3p/rich-sprint2/requirements.txt
+curl -o requirements.txt https://raw.githubusercontent.com/salesucation/k3p/main/requirements.txt
 
 pip install -r requirements.txt
 
-curl -o stage2.py https://raw.githubusercontent.com/salesucation/k3p/rich-sprint2/stage2.py
+curl -o stage2.py https://raw.githubusercontent.com/salesucation/k3p/main/stage2.py
 
 python stage2.py
