@@ -17,20 +17,10 @@ if [ $(id -u) -eq 0 ]; then
     fi
 fi
 
-
-# install some missing packages
-
-sudo apt update
-
-
-## install docker if not there
-if ! [ -x "$(command -v docker)" ]; then
-    sudo apt install docker.io
-fi
-
 ## install python if not there
 if ! [ -x "$(command -v python)" ]; then
-    sudo apt install python-is-python3 pip
+    sudo apt update
+    sudo apt install python-is-python3 python3-venv pip
 fi
 
 python -m venv /tmp/install
@@ -39,10 +29,10 @@ cd /tmp/install
 
 source ./bin/activate
 
-curl -o requirements.txt https://raw.githubusercontent.com/salesucation/k3p/main/requirements.txt
+curl -o requirements.txt https://raw.githubusercontent.com/salesucation/k3p/rich-sprint2/requirements.txt
 
 pip install -r requirements.txt
 
-curl -o stage2.py https://raw.githubusercontent.com/salesucation/k3p/main/stage2.py
+curl -o stage2.py https://raw.githubusercontent.com/salesucation/k3p/rich-sprint2/stage2.py
 
 python stage2.py
