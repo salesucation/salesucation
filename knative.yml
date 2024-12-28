@@ -1,16 +1,25 @@
 - name: install knative
   hosts: localhost
   tasks:
+# Download and apply manifest
+  - name: Download custom resources.
+    ansible.builtin.get_url:
+      url: https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-crds.yaml
+      dest: /tmp/install/serving-crds.yaml
+      mode: '0664'
   - name: install custom resources
     kubernetes.core.k8s:
       state: present
-      remote_src: 
-        src: https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-crds.yaml
+      src: /tmp/install/serving-crds.yaml
+  - name: Download core components.
+    ansible.builtin.get_url:
+      url: https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-core.yaml
+      dest: /tmp/install/serving-core.yaml
+      mode: '0664'
   - name: install core components
     kubernetes.core.k8s:
       state: present
-      remote_src: 
-        src: https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-core.yaml
+      src: /tmp/install/serving-core.yaml
   - name: download helm
     ansible.builtin.command: curl -o /tmp/installhelm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
     args:
