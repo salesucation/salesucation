@@ -4,11 +4,13 @@
   - name: install custom resources
     kubernetes.core.k8s:
       state: present
-      remote_src: https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-crds.yaml
+      remote_src: 
+        src: https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-crds.yaml
   - name: install core components
     kubernetes.core.k8s:
       state: present
-      remote_src: https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-core.yaml
+      remote_src: 
+        src: https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-core.yaml
   - name: download helm
     ansible.builtin.command: curl -o /tmp/installhelm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
     args:
