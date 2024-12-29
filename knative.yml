@@ -25,7 +25,7 @@
       url: https://github.com/knative/net-kourier/releases/download/knative-v1.16.0/kourier.yaml
       dest: /tmp/install/kourier.yaml
       mode: '0664'
-  - name: install core components
+  - name: install networking
     kubernetes.core.k8s:
       state: present
       src: /tmp/install/kourier.yaml
