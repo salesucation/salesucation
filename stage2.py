@@ -12,15 +12,15 @@ def download_file(url, local_filename):
     return local_filename
 
 # install a kubernetes 
-if shutil.which("docker"):
-    download_file('https://raw.githubusercontent.com/salesucation/k3p/rich-sprint3/k3d.yml', '/tmp/install/k3d.yml')
-    r = ansible_runner.run(private_data_dir='.', playbook='k3d.yml')
-    print("{}: {}".format(r.status, r.rc))
-else:
+if shutil.which("systemd"):
     download_file('https://raw.githubusercontent.com/salesucation/k3p/rich-sprint3/k3s.yml', '/tmp/install/k3s.yml')
     r = ansible_runner.run(private_data_dir='.', playbook='k3s.yml')
     print("{}: {}".format(r.status, r.rc))
     os.environ["KUBECONFIG"] = "/etc/rancher/k3s/k3s.yaml"
+else:
+    download_file('https://raw.githubusercontent.com/salesucation/k3p/rich-sprint3/k3d.yml', '/tmp/install/k3d.yml')
+    r = ansible_runner.run(private_data_dir='.', playbook='k3d.yml')
+    print("{}: {}".format(r.status, r.rc))
 
 # install knative
 download_file('https://raw.githubusercontent.com/salesucation/k3p/rich-sprint3/knative.yml', '/tmp/install/knative.yml')
