@@ -16,7 +16,7 @@ describe('bucket tests', async () => {
     it("does a get", async () =>{
         await env.fs.promises.writeFile(`${env.testPath}/k3p.io/rich2.txt`, "And also here");
         const oBucket = new Bucket(env);
-        const sContents = (await oBucket.get("k3p.io/rich2.txt")as any).toString();
+        const sContents = (await oBucket.get("k3p.io/rich2.txt")as any).body.toString();
         expect(sContents).toBe("And also here");
     }),
     it("does a delete", async () =>{
