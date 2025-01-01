@@ -1,7 +1,7 @@
 import JSZip from "jszip";
 
 export default class{
-    get: (key:string) => void;
+    get: (key:string) => any;
     delete: (key:string) => void;
     put: (key:string, body:any) => void;
     constructor(env:any){
@@ -25,7 +25,7 @@ export default class{
                 await env.fs.promises.writeFile(`${env.testPath}/${key}`, body);
             }
             this.delete = async (key:string) => {
-                await env.fs.promises.rm(`${env.testPath}/${key}`);
+                await env.fs.promises.rm(`${env.testPath}/${key}`, { recursive: true, force: true });
             }
         }
         else{
@@ -39,6 +39,11 @@ export default class{
         // more files !
         const oResult = await new_zip.loadAsync(body);
         const oKeys = Object.keys(oResult.files);
+        let sEnv = await this.get(`${folderKey}/.env`);
+        await this.delete(folderKey);
+        if(sEnv){
+            await this.put(`${folderKey}/.env`, sEnv);
+        }
         for (let key of oKeys) {
             const oItem = oResult.files[key];
             const contents = await oItem.async('uint8array');

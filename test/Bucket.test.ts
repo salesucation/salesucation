@@ -23,12 +23,14 @@ describe('bucket tests', async () => {
         await env.fs.promises.writeFile(`${env.testPath}/k3p.io/rich3.txt`, "And also here");
         const oBucket = new Bucket(env);
         await oBucket.delete("k3p.io/rich3.txt");
+        let isPresent = false;
         try{
             await env.fs.promises.access(`${env.testPath}/k3p.io/rich3.txt`);
-            expect(false).toBe("file k3p.io/rich3.txt is still here");
+            isPresent = true;
         }catch{
-            expect(true).toBe(true);
+            0;
         }
+        expect(isPresent).toBe(false);
     }),
     it("does an unzip in to a bucket", async () => {
         const aZipFile = env.fs.promises.readFile("test/data/test.zip");
@@ -37,5 +39,22 @@ describe('bucket tests', async () => {
         const sContents:string = await fs.promises.readFile(`${env.testPath}/k3p.io/index.html`, {encoding:"utf-8"});
         expect(sContents).toContain("Test Server");
 
+    }),
+    it("deletes preserving the .env file before doing an unzip", async () => {
+        await env.fs.promises.writeFile(`${env.testPath}/k3p.io/.env`, "And also here");
+        await env.fs.promises.writeFile(`${env.testPath}/k3p.io/sbgone.txt`, "And also here");
+        const aZipFile = env.fs.promises.readFile("test/data/test.zip");
+        const oBucket = new Bucket(env);
+        await oBucket.putZip("k3p.io", aZipFile);
+        const sContents:string = await fs.promises.readFile(`${env.testPath}/k3p.io/.env`, {encoding:"utf-8"});
+        expect(sContents).toBe("And also here");
+        let isPresent = false;
+        try{
+            await env.fs.promises.access(`${env.testPath}/k3p.io/sbgone.txt`);
+            isPresent = true;
+        }catch{
+            0;
+        }
+        expect(isPresent).toBe(false);
     })
 });
