@@ -1,5 +1,23 @@
 #!/bin/bash
 
+install_packages() {
+    if command -v apt-get &> /dev/null; then
+        apt-get update
+        apt-get install -y python-is-python3 python3-venv python3-pip curl
+    elif command -v yum &> /dev/null; then
+        yum install -y python3 python3-venv python3-pip curl
+    elif command -v dnf &> /dev/null; then
+        dnf install -y python3 python3-venv python3-pip curl
+    elif command -v apk &> /dev/null; then
+        apk add --no-cache python3 py3-venv py3-pip curl
+    elif command -v pkg &> /dev/null; then
+        pkg install -y python3 py38-venv py38-pip curl
+    else
+        echo "Unsupported package manager. Please install the required packages manually."
+        exit 1
+    fi
+}
+
 # create non root user with sudo privileges
 if [ $(id -u) -eq 0 ]; then
     echo -n "This installation is not meant to run as root ... enter non root username with passwordless sudo: "
@@ -34,20 +52,3 @@ curl -o stage2.py https://raw.githubusercontent.com/salesucation/k3p/main/stage2
 
 python stage2.py
 
-install_packages() {
-    if command -v apt-get &> /dev/null; then
-        sudo apt-get update
-        sudo apt-get install -y python-is-python3 python3-venv python3-pip curl
-    elif command -v yum &> /dev/null; then
-        sudo yum install -y python3 python3-venv python3-pip curl
-    elif command -v dnf &> /dev/null; then
-        sudo dnf install -y python3 python3-venv python3-pip curl
-    elif command -v apk &> /dev/null; then
-        sudo apk add --no-cache python3 py3-venv py3-pip curl
-    elif command -v pkg &> /dev/null; then
-        sudo pkg install -y python3 py38-venv py38-pip curl
-    else
-        echo "Unsupported package manager. Please install the required packages manually."
-        exit 1
-    fi
-}
