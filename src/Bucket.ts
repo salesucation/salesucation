@@ -1,4 +1,5 @@
 import JSZip from "jszip";
+import mime from "mime";
 
 export const testPath = "test/bucket";
 
@@ -10,10 +11,11 @@ export default class {
             const fs = (await import("node:fs")).default;
             try {
                 await fs.promises.access(`${testPath}/${key}`);
+                const mime_type = mime.getType(key)
                 return {
                     body: await fs.promises.readFile(`${testPath}/${key}`),
                     writeHttpMetadata: (headers: any) => {
-                        headers.set("Content-Type", "text/html");
+                        headers.set("Content-Type", mime_type);
                     },
                     httpEtag: "V1"
 
