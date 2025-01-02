@@ -1,45 +1,51 @@
 import JSZip from "jszip";
 
-export default class {
-    get: (key: string) => any;
-    delete: (key: string) => void;
-    put: (key: string, body: any) => void;
-    constructor(env: any) {
-        if (env.k3p) {
-            this.get = env.k3p.get.bind(env.k3p);
-            this.put = env.k3p.put.bind(env.k3p);
-            this.delete = env.k3p.delete.bind(env.k3p);
-        } else if (env.fs) {
-            this.get = async (key: string) => {
-                try {
-                    await env.fs.promises.access(`${env.testPath}/${key}`);
-                    return {
-                        body: await env.fs.promises.readFile(`${env.testPath}/${key}`),
-                        writeHttpMetadata: (headers: any) => {
-                            headers.set("Content-Type", "text/html");
-                        },
-                        httpEtag: "V1"
+export const testPath = "test/bucket";
 
-                    };
-                } catch {
-                    return null;
-                }
-            },
-                this.put = async (key: string, body: any) => {
-                    let aKey: string[] = key.split("/");
-                    aKey.pop();
-                    await env.fs.promises.mkdir(`${env.testPath}/${aKey.join('/')}`, { recursive: true });
-                    await env.fs.promises.writeFile(`${env.testPath}/${key}`, body);
-                }
-            this.delete = async (key: string) => {
-                await env.fs.promises.rm(`${env.testPath}/${key}`, { recursive: true, force: true });
+export default class {
+    async get(key: string){
+        if(this.env.k3p){
+            return await this.env.k3p.get(key);
+        }else{
+            const fs = (await import("node:fs")).default;
+            try {
+                await fs.promises.access(`${testPath}/${key}`);
+                return {
+                    body: await fs.promises.readFile(`${testPath}/${key}`),
+                    writeHttpMetadata: (headers: any) => {
+                        headers.set("Content-Type", "text/html");
+                    },
+                    httpEtag: "V1"
+
+                };
+            } catch {
+                return null;
             }
         }
-        else {
-            this.get = (null as any);
-            this.put = (null as any);
-            this.delete = (null as any);
+    }
+    async delete(key: string){
+        if(this.env.k3p){
+            return await this.env.k3p.delete(key);
+        }else{
+            const fs = (await import("node:fs")).default;
+            await fs.promises.rm(`${testPath}/${key}`, { recursive: true, force: true });
         }
+    }
+    async put(key: string, body: any){
+        if(this.env.k3p){
+            return await this.env.k3p.put(key, body);
+        }else{
+            const fs = (await import("node:fs")).default;
+            let aKey: string[] = key.split("/");
+            aKey.pop();
+            await fs.promises.mkdir(`${testPath}/${aKey.join('/')}`, { recursive: true });
+            await fs.promises.writeFile(`${testPath}/${key}`, body);
+        }
+
+    }
+    env:any;
+    constructor(env:any) {
+        this.env = env;
     }
     async putZip(folderKey: string, body: any) {
         const new_zip = new JSZip();
@@ -48,7 +54,7 @@ export default class {
         const oKeys = Object.keys(oResult.files);
         let sEnv = await this.get(`${folderKey}/.env`);
         await this.delete(folderKey);
-        if (sEnv.body) {
+        if (sEnv && sEnv.body) {
             await this.put(`${folderKey}/.env`, sEnv.body);
         }
         for (let key of oKeys) {

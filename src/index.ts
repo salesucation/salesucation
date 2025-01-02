@@ -3,8 +3,9 @@ import Bucket from "./Bucket";
 
 const app = new Hono()
 
+
 app.get('*', async (c) => {
-  const sHost:string = c.req.header('Host')!;
+  const sHost:string = c.req.header('Host')!.replace(/:[0-9]*$/, "");
   const oBucket = new Bucket(c.env);
   const sPath = c.req.path == "/"? "index.html": c.req.path;
   const object = await oBucket.get(`${sHost}/${sPath}`);
