@@ -14,6 +14,10 @@ declare global {
 
 if(globalThis.server){
     await globalThis.server.close();
+}else{
+    const aZipFile = fs.promises.readFile("test/data/test.zip");
+    const oBucket = new Bucket({});
+    await oBucket.putZip("localhost", aZipFile);    
 }
 
 globalThis.server = serve({ ...app, port: 4000 }, info => {

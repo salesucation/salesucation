@@ -3,6 +3,9 @@ import Bucket from "./Bucket";
 
 const app = new Hono()
 
+const proxy = async (_:any) =>{
+  return new Response("Object Not Found, so proxying", { status: 404 });
+}
 
 app.get('*', async (c) => {
   const sHost:string = c.req.header('Host')!.replace(/:[0-9]*$/, "");
@@ -11,7 +14,7 @@ app.get('*', async (c) => {
   const object = await oBucket.get(`${sHost}/${sPath}`);
 
   if (object === null) {
-    return new Response("Object Not Found, so proxying", { status: 404 });
+    return proxy(c);
   }
 
   const headers = new Headers();
@@ -21,6 +24,18 @@ app.get('*', async (c) => {
   return new Response(object.body, {
     headers,
   });
-})
+});
+
+app.put("/", async (c)=>{
+  const body = await c.req.arrayBuffer();
+  const sHost:string = c.req.header('Host')!.replace(/:[0-9]*$/, "");
+  const oBucket = new Bucket(c.env);
+  await oBucket.putZip(sHost, body);
+  return new Response("ok");
+});
+
+app.all("*", async (c) =>{
+  return proxy(c);
+});
 
 export default app
