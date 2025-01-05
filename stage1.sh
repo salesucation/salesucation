@@ -1,21 +1,26 @@
 #!/bin/bash
 
 install_packages() {
-    if command -v apt-get &> /dev/null; then
-        apt-get update
-        apt-get install -y python-is-python3 python3-venv python3-pip curl
-    elif command -v yum &> /dev/null; then
-        yum install -y python3 python3-venv python3-pip curl
-    elif command -v dnf &> /dev/null; then
-        dnf install -y python3 python3-venv python3-pip curl
-    elif command -v apk &> /dev/null; then
-        apk add --no-cache python3 py3-venv py3-pip curl
-    elif command -v pkg &> /dev/null; then
-        pkg install -y python3 py38-venv py38-pip curl
+    if ! command -v python3 &> /dev/null || ! command -v curl &> /dev/null; then
+        if command -v apt-get &> /dev/null; then
+            apt-get update
+            apt-get install -y python-is-python3 python3-venv python3-pip curl
+        elif command -v yum &> /dev/null; then
+            echo "installing yum packages"
+            yum install -y python3 virtualenv python-pip curl
+        elif command -v dnf &> /dev/null; then
+            dnf install -y python3 python3-venv python3-pip curl
+        elif command -v apk &> /dev/null; then
+            apk add --no-cache python3 py3-virtualenv py3-pip curl
+        elif command -v pkg &> /dev/null; then
+            pkg install -y python38 py38-venv py38-pip curl
+        else
+            echo "Unsupported package manager. Please install the required packages manually."
+            exit 1
+        fi
     else
-        echo "Unsupported package manager. Please install the required packages manually."
-        exit 1
-    fi
+        echo "Python and curl are already installed."
+    fi        
 }
 
 # create non root user with sudo privileges
