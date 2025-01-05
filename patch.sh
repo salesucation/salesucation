@@ -5,4 +5,4 @@ kubectl patch configmap/config-network \
 kubectl patch configmap/config-domain \
   --namespace knative-serving \
   --type merge \
-  --patch '{"data":{"k3p.io":""}}'
+  --patch '{"data":{"api.k3p.dev":""}}'
