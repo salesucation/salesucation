@@ -2,6 +2,15 @@
   hosts: localhost
   tasks:
   # from https://platform9.com/blog/how-to-set-up-knative-serving-on-kubernetes/
+  - name: Download certificate generation.
+    ansible.builtin.get_url:
+      url: https://github.com/knative/net-http01/releases/download/knative-v1.1.0/release.yaml
+      dest: /tmp/install/http01.yaml
+      mode: '0664'
+  - name: install certificate generation
+    kubernetes.core.k8s:
+      state: present
+      src: /tmp/install/http01.yaml
   - name: Create test namespace
     kubernetes.core.k8s:
       name: test

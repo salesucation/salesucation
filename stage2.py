@@ -41,11 +41,11 @@ print(patch_string)
 
 os.system(patch_string)
 
-os.system("""kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"certificate-class":"net-http01.certificate.networking.knative.dev"}}'""")
-
-os.system("""kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"auto-tls":"Enabled"}}'""")
-
 # install knative hello test service
 download_file('https://raw.githubusercontent.com/salesucation/k3p/main/knative-hello.yml', '/tmp/install/knative-hello.yml')
 r = ansible_runner.run(private_data_dir='.', playbook='knative-hello.yml')
 print("{}: {}".format(r.status, r.rc))
+
+os.system("""kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"certificate-class":"net-http01.certificate.networking.knative.dev"}}'""")
+
+os.system("""kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"auto-tls":"Enabled"}}'""")
