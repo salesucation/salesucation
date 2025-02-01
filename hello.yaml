@@ -2,7 +2,7 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: hello
-  namespace: test2
+  namespace: test
 spec:
   template:
     spec:
@@ -12,4 +12,4 @@ spec:
             - containerPort: 8080
           env:
             - name: TARGET
-              value: "World"
+              value: "from Salesucation"

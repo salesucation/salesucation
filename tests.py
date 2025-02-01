@@ -1,11 +1,10 @@
-# foo.py
 import unittest
+import urllib3
 
-
-def func(input):
-    return input
-
+http = urllib3.PoolManager()
 
 class testInput(unittest.TestCase):
     def test_func(self):
-        self.assertEqual(func(1), 1)
+        response = http.request('GET', 'http://localhost', headers={
+            'Host': "hello.test.example.com"})
+        self.assertEqual(response, 1)
