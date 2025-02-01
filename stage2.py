@@ -33,7 +33,9 @@ os.system("""kubectl patch configmap/config-network --namespace knative-serving 
 
 domain_name = input("please enter the domain name: ")
 
-patch_string = """kubectl patch configmap/config-domain --namespace knative-serving --type merge --patch '{"data":{"""" + domain_name + """":""}}'"""
+patch_string = """kubectl patch configmap/config-domain --namespace knative-serving --type merge --patch '{"data":{""""
+patch_string += domain_name 
+patch_string += """":""}}'"""
 
 print(patch_string)
 
