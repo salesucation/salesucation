@@ -1,6 +1,7 @@
 - name: install knative-hello
   hosts: localhost
   tasks:
+  # from https://platform9.com/blog/how-to-set-up-knative-serving-on-kubernetes/
   - name: Create test namespace
     kubernetes.core.k8s:
       name: test
