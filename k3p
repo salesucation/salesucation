@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# get hostname for target machine
+echo -n "please enter your email so that we can follow up and see how it is going: "
+read EMAIL
+
+# get hostname for target machine
+echo -n "please set up a DNS cname for this installation and provide it here: "
+read HOSTNAME
+
+# create non root user with sudo privileges
+if [ $(id -u) -eq 0 ]; then
+    echo -n "This installation is not meant to run as root ... enter non root username with passwordless sudo: "
+    read USERNAME
+    if [ ! -d /home/$USERNAME ]; then
+        useradd $USERNAME -u 1000 --shell "/bin/bash" && echo "$USERNAME:$USERNAME" | chpasswd && adduser $USERNAME sudo
+        sed -i /etc/sudoers -re 's/^%sudo.*/%sudo   ALL=(ALL:ALL) NOPASSWD: ALL/g'
+        mkdir /home/$USERNAME
+        chown $USERNAME:$USERNAME /home/$USERNAME
+        usermod -a -G docker $USERNAME
+
+        echo 'You will still need to set up some authorized_keys'
+        echo 'Also please sefile.zipt `PermitRootLogin no`'
+        echo '`PasswordAuthentication no` and `ChallengeResponseAuthentication no`'
+    fi
+fi
+
+#install a kubernetes
+if command -v kubectl &> /dev/null; then
+    if command -v systemctl &> /dev/null; then
+        #k3s
+        curl -sfL https://get.k3s.io | sh -s - --disable traefik --write-kubeconfig-mode 644
+    else
+        #k3d
+        curl https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh -o /tmp/installk3d.sh
+        source /tmp/installk3d.sh
+        curl -Lo /tmp/installkubectl https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kubectl
+        sudo install -o root -g root -m 0755 /tmp/installkubectl /usr/local/bin/kubectl
+        k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2 --k3s-arg "--disable=traefik@server:0"
+    fi
+fi
+
+# install knative
+
+kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-crds.yaml
+kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-core.yaml
+
+# install networking
+kubectl apply -f https://github.com/knative/net-kourier/releases/download/knative-v1.16.0/kourier.yaml
+kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"ingress-class":"kourier.ingress.networking.knative.dev"}}'
+kubectl patch configmap/config-domain \
+  --namespace knative-serving \
+  --type merge \
+  --patch '{"data":{"$HOSTNAME":""}}'
+kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.1.0/release.yaml
+kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"certificate-class":"net-http01.certificate.networking.knative.dev"}}'
+kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"auto-tls":"Enabled"}}'
+
+# install test service
+kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/hello.yaml
