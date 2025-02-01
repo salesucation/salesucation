@@ -29,4 +29,16 @@ r = ansible_runner.run(private_data_dir='.', playbook='knative.yml')
 print("{}: {}".format(r.status, r.rc))
 
 # make patches
+os.system("""kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"ingress-class":"kourier.ingress.networking.knative.dev"}}'""")
 
+domain_name = input("please enter the domain name: ")
+
+patch_string = """kubectl patch configmap/config-domain --namespace knative-serving --type merge --patch '{"data":{"""" + domain_name + """":""}}'"""
+
+print(patch_string)
+
+os.system(patch_string)
+
+os.system("""kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"certificate-class":"net-http01.certificate.networking.knative.dev"}}'""")
+
+os.system("""kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"auto-tls":"Enabled"}}'""")
