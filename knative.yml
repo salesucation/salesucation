@@ -38,3 +38,20 @@
     kubernetes.core.k8s:
       state: present
       src: /tmp/install/http01.yaml
+  - name: Create test namespace
+    kubernetes.core.k8s:
+      name: test
+      api_version: v1
+      kind: Namespace
+      state: present
+  - name: Download hello.yaml.
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/salesucation/k3p/main/hello.yaml
+      dest: /tmp/install/hello.yaml
+      mode: '0664'
+  - name: install certificate generation
+    kubernetes.core.k8s:
+      state: present
+      src: /tmp/install/hello.yaml
+
+
