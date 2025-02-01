@@ -1,4 +1,4 @@
-- name: install k3p
+- name: install k33
   hosts: localhost
   tasks:
   - name: install k3s
