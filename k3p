@@ -31,14 +31,17 @@ fi
 if ! [ -x "$(command -v kubectl)" ]; then
     if [ -x "$(command -v systemctl)" ]; then
         #k3s
+        echo "installing k3s"
         curl -sfL https://get.k3s.io | sh -s - --disable traefik --write-kubeconfig-mode 644
     else
         #k3d
-        curl https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh -o /tmp/installk3d.sh
-        source /tmp/installk3d.sh
-        curl -Lo /tmp/installkubectl https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kubectl
-        sudo install -o root -g root -m 0755 /tmp/installkubectl /usr/local/bin/kubectl
-        k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2 --k3s-arg "--disable=traefik@server:0"
+        echo "installing k3d"
+        curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+        k3d cluster create k3d-cluster --k3s-arg "--disable=traefik@server:0"
+        # kubectl
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin
     fi
 fi
 
@@ -65,10 +68,10 @@ CMD+=$HOSTNAME
 CMD+="\":\"\"}}'"
 eval $CMD
 
-kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.12.0/release.yaml
 
 if [ -x "$(command -v systemctl)" ]; then
     #k3s
+    kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.12.0/release.yaml
     sleep 3
     echo "wait for net-http01"
     kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
