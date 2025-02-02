@@ -44,19 +44,23 @@ fi
 
 # install knative
 
-kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-crds.yaml
-kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-core.yaml
+kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.12.0/serving-crds.yaml
+kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.12.0/serving-core.yaml
 
+sleep 3
 echo "Wait for knative"
 kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
 
 # install networking
-kubectl apply -f https://github.com/knative/net-kourier/releases/download/knative-v1.16.0/kourier.yaml
+kubectl apply -f https://github.com/knative/net-kourier/releases/download/knative-v1.12.0/kourier.yaml
 
+sleep 3
 echo "wait for kourier"
 kubectl wait pod --all --for=condition=Ready --namespace=kourier-system
 
 kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"ingress-class":"kourier.ingress.networking.knative.dev"}}'
+
+sleep 3
 echo "wait for kourier patch"
 kubectl wait pod --all --for=condition=Ready --namespace=kourier-system
 
@@ -66,11 +70,25 @@ CMD+=$HOSTNAME
 CMD+="\":\"\"}}'"
 eval $CMD
 
-kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.1.0/release.yaml
-
-echo "wait for net-http-01"
+sleep 3
+echo "wait for patch hostname"
 kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
+
+kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.12.0/release.yaml
+
+sleep 3
+echo "wait for net-http01"
+kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
+
 
 
 kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"certificate-class":"net-http01.certificate.networking.knative.dev"}}'
 kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"auto-tls":"Enabled"}}'
+
+
+sleep 3
+echo "wait for auto-tls"
+kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
+
+kubectl create namespace test
+kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/hello.yaml

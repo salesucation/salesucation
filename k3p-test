@@ -1,4 +1,0 @@
-#!/bin/bash
-
-kubectl create namespace test
-kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/hello.yaml
