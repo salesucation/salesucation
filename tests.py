@@ -6,7 +6,9 @@ http = urllib3.PoolManager()
 
 class testInput(unittest.TestCase):
     def test_func(self):
-        response = http.request('GET', 'http://hello.test.k3p.ca')
+        #TODO: set host header to match provided CNAME
+        response = http.request('GET', 'http://localhost', headers={
+        "Host": "hello.test.k3p.ca"})
         self.assertEqual(response.data, b'Hello from Salesucation!\n')
 
 
