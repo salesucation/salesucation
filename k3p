@@ -28,12 +28,9 @@ if [ $(id -u) -eq 0 ]; then
 fi
 
 #install a kubernetes
-if ! [ -x "$(command -v kubectl)" ]; then
-    if [ -x "$(command -v systemctl)" ]; then
-        #k3s
-        echo "installing k3s"
-        curl -sfL https://get.k3s.io | sh -s - --disable traefik --write-kubeconfig-mode 644
-    else
+if ! kubectl get ns default >/dev/null 2>&1; then
+    echo "Installing a kubernetes"
+    if [[ -v K8S ]]; then
         #k3d
         echo "installing k3d"
         curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
@@ -42,6 +39,10 @@ if ! [ -x "$(command -v kubectl)" ]; then
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin
+    else
+        #k3s
+        echo "installing k3s"
+        curl -sfL https://get.k3s.io | sh -s - --disable traefik --write-kubeconfig-mode 644
     fi
 fi
 
