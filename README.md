@@ -4,6 +4,25 @@
 
 TLDR;
 
+IF you are using devcontainers, first set up a `.devcontainer/devcontainer.json` with:
+
+```json
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
+	},
+	"runArgs": [
+		"--cpus=2",
+		"--memory=8g"
+	],
+	"containerEnv": {
+		"K8S": "k3d"
+	},
+
+```
+IF you are using a devcontainer wait until `docker ps` works and run:
+
+ELSE just run:
+
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/salesucation/k3p/main/k3p)
 ```
