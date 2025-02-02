@@ -1,3 +1,0 @@
-ansible
-ansible_runner
-kubernetes

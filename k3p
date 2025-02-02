@@ -5,8 +5,10 @@ echo -n "please enter your email so that we can follow up and see how it is goin
 read EMAIL
 
 # get hostname for target machine
-echo -n "please set up a DNS cname for this installation and provide it here: "
+echo -n "please set up a DNS cname or A record for this installation and provide it here: "
 read HOSTNAME
+
+
 
 # create non root user with sudo privileges
 if [ $(id -u) -eq 0 ]; then
@@ -26,8 +28,8 @@ if [ $(id -u) -eq 0 ]; then
 fi
 
 #install a kubernetes
-if command -v kubectl &> /dev/null; then
-    if command -v systemctl &> /dev/null; then
+if ! [ -x "$(command -v kubectl)" ]; then
+    if [ -x "$(command -v systemctl)" ]; then
         #k3s
         curl -sfL https://get.k3s.io | sh -s - --disable traefik --write-kubeconfig-mode 644
     else
@@ -45,16 +47,30 @@ fi
 kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-crds.yaml
 kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.16.0/serving-core.yaml
 
+echo "Wait for knative"
+kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
+
 # install networking
 kubectl apply -f https://github.com/knative/net-kourier/releases/download/knative-v1.16.0/kourier.yaml
+
+echo "wait for kourier"
+kubectl wait pod --all --for=condition=Ready --namespace=kourier-system
+
 kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"ingress-class":"kourier.ingress.networking.knative.dev"}}'
-kubectl patch configmap/config-domain \
-  --namespace knative-serving \
-  --type merge \
-  --patch '{"data":{"$HOSTNAME":""}}'
+echo "wait for kourier patch"
+kubectl wait pod --all --for=condition=Ready --namespace=kourier-system
+
+
+CMD="kubectl patch configmap/config-domain --namespace knative-serving --type merge --patch '{\"data\":{\""
+CMD+=$HOSTNAME
+CMD+="\":\"\"}}'"
+eval $CMD
+
 kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.1.0/release.yaml
+
+echo "wait for net-http-01"
+kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
+
+
 kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"certificate-class":"net-http01.certificate.networking.knative.dev"}}'
 kubectl patch configmap/config-network --namespace knative-serving --type merge --patch '{"data":{"auto-tls":"Enabled"}}'
-
-# install test service
-kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/hello.yaml
