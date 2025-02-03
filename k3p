@@ -72,6 +72,7 @@ eval $CMD
 
 if [[ -v K8S ]]; then
     #k3d
+    kubectl patch --namespace knative-serving configmap/config-features --type merge --patch '{"data":{"kubernetes.podspec-persistent-volume-claim": "enabled", "kubernetes.podspec-persistent-volume-write": "enabled"}}'
     kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/persistent.yaml
 else    
     #k3s
