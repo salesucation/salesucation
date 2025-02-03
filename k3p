@@ -34,7 +34,7 @@ if ! kubectl get ns default >/dev/null 2>&1; then
         #k3d
         echo "installing k3d"
         curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-        k3d cluster create k3d-cluster --k3s-arg "--disable=traefik@server:0"
+        k3d cluster create k3d-cluster --k3s-arg "--disable=traefik@server:0" --volume $PWD/data:/var/data
         # kubectl
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         chmod +x kubectl
@@ -70,7 +70,10 @@ CMD+="\":\"\"}}'"
 eval $CMD
 
 
-if ! [[ -v K8S ]]; then
+if [[ -v K8S ]]; then
+    #k3d
+    kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/persistent.yaml
+else    
     #k3s
     kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.17.0/release.yaml
     sleep 3
