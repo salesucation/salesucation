@@ -76,10 +76,10 @@ CMD+=$HOSTNAME
 CMD+="\":\"\"}}'"
 eval $CMD
 
+kubectl patch --namespace knative-serving configmap/config-features --type merge --patch '{"data":{"kubernetes.podspec-persistent-volume-claim": "enabled", "kubernetes.podspec-persistent-volume-write": "enabled"}}'
 
 if [[ -v K8S ]]; then
     #k3d
-    kubectl patch --namespace knative-serving configmap/config-features --type merge --patch '{"data":{"kubernetes.podspec-persistent-volume-claim": "enabled", "kubernetes.podspec-persistent-volume-write": "enabled"}}'
     kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/persistent.yaml
     kubectl patch storageclass local-path -p '{"allowVolumeExpansion": true}'
 else    
@@ -101,6 +101,10 @@ else
 
     echo "wait for longhorn"
     kubectl wait pod --all --for=condition=Ready --namespace=longhorn-system
+    kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+    kubectl patch storageclass longhorn -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+    kubectl apply -f longhorn.yaml -n longhorn-system
+    kubectl patch storageclass no-replicas -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 fi
 
 # test ksvc
@@ -108,6 +112,3 @@ fi
 kubectl create namespace test
 kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/hello.yaml
 
-# add longhorn for knative
-
-kubectl patch --namespace knative-serving configmap/config-features --type merge --patch '{"data":{"kubernetes.podspec-persistent-volume-claim": "enabled", "kubernetes.podspec-persistent-volume-write": "enabled"}}'
