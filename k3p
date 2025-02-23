@@ -34,7 +34,7 @@ if ! kubectl get ns default >/dev/null 2>&1; then
         #k3d
         echo "installing k3d"
         curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-        k3d cluster create k3d-cluster --k3s-arg "--disable=traefik@server:0" --volume $PWD/data:/var/data
+        k3d cluster create k3d-cluster --k3s-arg "--disable=traefik@server:0"
         # kubectl
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         chmod +x kubectl
@@ -78,11 +78,9 @@ eval $CMD
 
 kubectl patch --namespace knative-serving configmap/config-features --type merge --patch '{"data":{"kubernetes.podspec-persistent-volume-claim": "enabled", "kubernetes.podspec-persistent-volume-write": "enabled"}}'
 
-if [[ -v K8S ]]; then
-    #k3d
-    kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/persistent.yaml
-    kubectl patch storageclass local-path -p '{"allowVolumeExpansion": true}'
-else    
+kubectl patch storageclass local-path -p '{"allowVolumeExpansion": true}'
+
+if [![ -v K8S ]]; then
     #k3s
     kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.12.0/release.yaml
     sleep 3
@@ -93,18 +91,6 @@ else
     sleep 3
     echo "wait for auto-tls"
     kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
-    # longhorn and prerequisites
-
-    sudo apt update && sudo apt install open-iscsi nfs-common
-
-    kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.8.0/deploy/longhorn.yaml
-
-    echo "wait for longhorn"
-    kubectl wait pod --all --for=condition=Ready --namespace=longhorn-system
-    kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-    kubectl patch storageclass longhorn -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-    kubectl apply -f longhorn.yaml -n longhorn-system
-    kubectl patch storageclass no-replicas -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 fi
 
 # test ksvc
