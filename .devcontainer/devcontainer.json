@@ -10,10 +10,9 @@
 	"runArgs": [
 		"--cap-add=SYS_PTRACE",
 		"--security-opt",
-		"seccomp=unconfined",
-		"--cpus=2",
-		"--memory=16g"
+		"seccomp=unconfined"
 	],
+	"hostRequirements":{"memory": "16gb"},
 	"containerEnv": {
 		"K8S": "k3d"
 	},
