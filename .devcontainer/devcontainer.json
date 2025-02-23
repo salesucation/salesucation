@@ -11,7 +11,7 @@
 		"--cap-add=SYS_PTRACE",
 		"--security-opt",
 		"seccomp=unconfined",
-		"--cpus=4",
+		"--cpus=2",
 		"--memory=16g"
 	],
 	"containerEnv": {
