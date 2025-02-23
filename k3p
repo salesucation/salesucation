@@ -27,10 +27,6 @@ if [ $(id -u) -eq 0 ]; then
     fi
 fi
 
-# prerequisites
-
-sudo apt update && sudo apt install open-iscsi nfs-common
-
 #install a kubernetes
 if ! kubectl get ns default >/dev/null 2>&1; then
     echo "Installing a kubernetes"
@@ -93,6 +89,14 @@ else
     sleep 3
     echo "wait for auto-tls"
     kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
+    # longhorn and prerequisites
+
+    sudo apt update && sudo apt install open-iscsi nfs-common
+
+    kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.8.0/deploy/longhorn.yaml
+
+    echo "wait for longhorn"
+    kubectl wait pod --all --for=condition=Ready --namespace=longhorn-system
 fi
 
 # test ksvc
@@ -103,8 +107,3 @@ kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/hello.y
 # add longhorn for knative
 
 kubectl patch --namespace knative-serving configmap/config-features --type merge --patch '{"data":{"kubernetes.podspec-persistent-volume-claim": "enabled", "kubernetes.podspec-persistent-volume-write": "enabled"}}'
-
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.8.0/deploy/longhorn.yaml
-
-echo "wait for longhorn"
-kubectl wait pod --all --for=condition=Ready --namespace=longhorn-system
