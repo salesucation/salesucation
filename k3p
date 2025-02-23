@@ -78,6 +78,7 @@ if [[ -v K8S ]]; then
     #k3d
     kubectl patch --namespace knative-serving configmap/config-features --type merge --patch '{"data":{"kubernetes.podspec-persistent-volume-claim": "enabled", "kubernetes.podspec-persistent-volume-write": "enabled"}}'
     kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/persistent.yaml
+    kubectl patch storageclass local-path -p '{"allowVolumeExpansion": true}'
 else    
     #k3s
     kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.12.0/release.yaml
