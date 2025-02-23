@@ -27,6 +27,10 @@ if [ $(id -u) -eq 0 ]; then
     fi
 fi
 
+# prerequisites
+
+sudo apt update && sudo apt install open-iscsi nfs-common
+
 #install a kubernetes
 if ! kubectl get ns default >/dev/null 2>&1; then
     echo "Installing a kubernetes"
@@ -45,6 +49,10 @@ if ! kubectl get ns default >/dev/null 2>&1; then
         curl -sfL https://get.k3s.io | sh -s - --disable traefik --write-kubeconfig-mode 644
     fi
 fi
+
+# install helm
+
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # install knative
 
@@ -87,5 +95,16 @@ else
     kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
 fi
 
+# test ksvc
+
 kubectl create namespace test
 kubectl apply -f https://raw.githubusercontent.com/salesucation/k3p/main/hello.yaml
+
+# add longhorn for knative
+
+kubectl patch --namespace knative-serving configmap/config-features --type merge --patch '{"data":{"kubernetes.podspec-persistent-volume-claim": "enabled", "kubernetes.podspec-persistent-volume-write": "enabled"}}'
+
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.8.0/deploy/longhorn.yaml
+
+echo "wait for longhorn"
+kubectl wait pod --all --for=condition=Ready --namespace=longhorn-system
