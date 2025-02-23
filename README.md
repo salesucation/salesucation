@@ -42,3 +42,11 @@ python tests.py
 ```
 
 I hope that this helps!
+
+*Note
+
+This command gets logs from all pods in a namespace:
+
+```bash
+kubectl get pods -n platform -o name | xargs -I{} kubectl logs -n platform --all-containers {}
+```
