@@ -43,6 +43,9 @@ if ! kubectl get ns default >/dev/null 2>&1; then
         #k3s
         echo "installing k3s"
         curl -sfL https://get.k3s.io | sh -s - --disable traefik --write-kubeconfig-mode 644
+        sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+        sudo chown $(id -u):$(id -g) ~/.kube/config
+
     fi
 fi
 
