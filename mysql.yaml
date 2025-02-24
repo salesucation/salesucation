@@ -37,6 +37,11 @@ spec:
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
+      - image: adminer
+        name: adminer
+        ports:
+        - containerPort: 8080
+
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
