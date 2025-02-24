@@ -42,6 +42,8 @@ python tests.py
 ```
 Build on this to create your own microservice.
 
+Note: I didn't find a great way to port-forward the ksvc. My thinking is you will develop your service in the container with port-forward of mysql and minio if needed. Then you will use tests.py to make sure that your microfrontend/full stack web component works as a ksvc.
+
 ## Mysql
 
 To install mysql in your namespace:
@@ -49,7 +51,11 @@ To install mysql in your namespace:
 1. create the namespace `kubectl create namespace myservice`
 1. install the persistent volume `kubectl apply -f mysqlpvc.yaml -n myservice`
 1. deploy mysql (and the adminer sidecar) `kubectl apply -f mysql.yaml -n myservice`
-1. be sure to create environment variables to consume in your microservice for DBUSER, DBPASSWD, DBNAME and DBHOST.
+
+To access mysql with the adminer sidecar get the pod: `kubectl get pods -n myservice`. Then port-forward adminer on the pod `kubectl port-forward mysql-6d544974d7-z4zph -n myservice 8080:8080`.
+
+*BE sure* to create environment variables to consume in your microservice for DBUSER, DBPASSWD, DBNAME and DBHOST.
+
 
 ## S3 Compatible storage
 
