@@ -80,7 +80,7 @@ kubectl patch --namespace knative-serving configmap/config-features --type merge
 
 kubectl patch storageclass local-path -p '{"allowVolumeExpansion": true}'
 
-if [![ -v K8S ]]; then
+if [[ ! -v K8S ]]; then
     #k3s
     kubectl apply -f https://github.com/knative/net-http01/releases/download/knative-v1.12.0/release.yaml
     sleep 3
@@ -92,6 +92,17 @@ if [![ -v K8S ]]; then
     echo "wait for auto-tls"
     kubectl wait pod --all --for=condition=Ready --namespace=knative-serving
 fi
+
+# add signoz
+
+helm repo add signoz https://charts.signoz.io
+kubectl create ns platform
+helm --namespace platform install my-release signoz/signoz
+sleep 3
+echo "wait for signoz"
+kubectl wait pod --all --for=condition=Ready --namespace=platform
+helm install my-k8s-infra signoz/k8s-infra --set otelCollectorEndpoint=my-release-signoz-otel-collector:4317 -n platform
+
 
 # test ksvc
 
