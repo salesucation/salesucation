@@ -90,4 +90,4 @@ kubectl get pods -n platform -o name | xargs -I{} kubectl logs -n platform --all
 
 We are building this in to a public service mesh to create an ecosystem for full stack webcomponents. As such it is running on multiple nodes and with the excellent mysql operator, longhorn and minio. I have also been building full stack web components for a self service portal. These additions are for sale as an enterprise version of salesucation. Please contact us at https://salesucation.ca if you are interested in an enterprise version.
 
-Thanks for reading this far. Micro-frontends/ full stack web components are an excellent way for autonomous teams to collaborate with much reduced interdendency. It is our hope that salesucation will start a cheap, cheerful and CAD ecosystem for microfrontend/ full stack web components.
+Thanks for reading this far. Micro-frontends/ full stack web components are an excellent way for autonomous teams to collaborate with much reduced interdependency. It is our hope that salesucation will start a cheap, cheerful and CAD ecosystem for microfrontend/ full stack web components.
