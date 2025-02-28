@@ -10,10 +10,7 @@ IF you are using devcontainers, first set up a `.devcontainer/devcontainer.json`
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
 	},
-	"runArgs": [
-		"--cpus=2",
-		"--memory=8g"
-	],
+	"hostRequirements":{"memory": "16gb"},
 	"containerEnv": {
 		"K8S": "k3d"
 	},
