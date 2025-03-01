@@ -12,7 +12,7 @@
 		"--security-opt",
 		"seccomp=unconfined"
 	],
-	"hostRequirements":{"memory": "16gb"},
+	"hostRequirements":{"memory": "32gb"},
 	"containerEnv": {
 		"K8S": "k3d"
 	},
