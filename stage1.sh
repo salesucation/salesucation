@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # create non root user with sudo privileges
 if [ $(id -u) -eq 0 ]; then
     echo -n "This installation is not meant to run as root ... enter non root username with passwordless sudo: "
